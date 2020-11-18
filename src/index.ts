@@ -1,3 +1,6 @@
+import {createConnection} from 'typeorm'
+import {arrDB} from "./entity/arr";
+
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -5,7 +8,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const bubbleSort = (arr: Array<number>): string => {
+const bubbleSort = (arr: Array<number>): Array<number> => {
 
     for (let i = 0, endI = arr.length - 1; i < endI; i++) {
 
@@ -22,10 +25,23 @@ const bubbleSort = (arr: Array<number>): string => {
 
         if (!wasSwap) break;
     }
-    return arr.join(' ')
+    return arr
 };
 
 rl.question('Введите числа через пробел: ', async (value: string) => {
     rl.close()
-    console.log(bubbleSort(value.split(' ').map(parseFloat)))
+    const result = bubbleSort(value.trim().split(' ').map(parseFloat))
+
+    await createConnection().then(async (connection) => {
+
+        const value = new arrDB();
+        value.data = result
+
+        const arrRepository = connection.getRepository(arrDB);
+
+        await arrRepository.save(value);
+
+    })
+
+    console.log(result.join(' '))
 })
