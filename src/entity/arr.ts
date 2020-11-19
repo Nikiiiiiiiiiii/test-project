@@ -1,12 +1,12 @@
-import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, Column, BaseEntity, PrimaryColumn} from "typeorm";
 
-@Entity()
-export class arrDB {
+@Entity('array')
+export class arrDB extends BaseEntity{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn("int", {nullable: false})
     id: number;
 
-    @Column("int", { array: true })
+    @Column("int", { array: true, nullable: false})
     data: number[];
 
 }
