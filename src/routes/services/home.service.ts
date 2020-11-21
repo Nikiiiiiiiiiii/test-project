@@ -1,7 +1,7 @@
 import {arrDB} from "../../entity/arr";
 import {IarrDB} from "../../interfaces/arrDB.interface";
 
-const bubbleSort = (arr: Array<number>): Array<number> => {
+const bubbleSort = (arr: Array<number>): string => {
 
     for (let i = 0, endI = arr.length - 1; i < endI; i++) {
 
@@ -18,13 +18,13 @@ const bubbleSort = (arr: Array<number>): Array<number> => {
 
         if (!wasSwap) break;
     }
-    return arr
+    return arr.join(' ')
 };
 
 export const create = async (array: Array<number>): Promise<IarrDB> => {
 
     return await arrDB.create({
-        id: 1,
         data: bubbleSort(array)
     }).save()
+
 }

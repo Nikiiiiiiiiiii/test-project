@@ -1,8 +1,6 @@
 import {createConnection} from 'typeorm'
-import {arrDB} from "./entity/arr";
 
 const express = require('express')
-const readline = require('readline');
 const exphbs = require('express-handlebars')
 const path = require('path')
 
@@ -24,29 +22,15 @@ const PORT = 3000
 
 async function start() {
     try {
+        await createConnection().then(() => console.log('db connect'))
 
-        await createConnection()
-            .then(async () => await arrDB.clear()) //clear, чтобы постоянно обращаться к актульному id: 1 (Удобно для тестирования на работоспособность)
-
-        app.listen(PORT)
+        app.listen(PORT, () => {
+            console.log(`Server has been started on http://localhost:${PORT}`)
+        })
 
     } catch (e) {
         console.log(e)
     }
 }
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-export let userArray: Array<number> = []
-
- start().then(() => {
-
-     rl.question('Введите числа через пробел: ', (value: string) => {
-         rl.close()
-         userArray = value.trim().split(' ').map(parseFloat)
-     })
-
- })
+start()

@@ -1,13 +1,12 @@
-import {userArray} from "../../index";
 import {create} from "../services/home.service";
 
 export const root = (req: any, res: any) => {
-    res.render('index', {
-        array: userArray
-    })
+    res.render('index')
 }
 
 export const calc = async (req: any, res: any) => {
-    await create(userArray)
-    res.redirect('/')
+    const array = await create(req.body.title.trim().split(' ').map(parseFloat))
+    res.render('index', {
+        array: array.data
+    })
 }
