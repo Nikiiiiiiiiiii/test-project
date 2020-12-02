@@ -1,5 +1,6 @@
-import {arrDB} from "../../entity/arr";
-import { getManager} from "typeorm";
+import {getConnection, getManager} from "typeorm";
+import {Arr} from "../../entity/array";
+import {Data} from "../../entity/data";
 
 const bubbleSort = (arr: Array<number>): Array<number> => {
 
@@ -24,18 +25,27 @@ const bubbleSort = (arr: Array<number>): Array<number> => {
 export const create = async (array: Array<number>): Promise<Array<number>> => {
 
     let lastSortId = await getManager()
-        .query(`SELECT MAX(sortid) FROM public.array`) // Получаем id последней сортировки в бд
+        .query(`SELECT MAX(sortid) FROM public.data`) // Получаем id последней сортировки в бд
 
     lastSortId[0].max === null ? lastSortId = 1 : lastSortId = lastSortId[0].max + 1 // Если сортировок ещё не было, указываем, что это первая, иначе приводим полученное значение к удобному виду
 
     const result = bubbleSort(array)
 
+    await Data.create({
+        sortid: lastSortId
+    }).save()
+
     for (let j = 0; j < result.length; j++) {
-        await arrDB.create({
-            sortid: lastSortId,
-            el: result[j]
+        await Arr.create({
+            el: result[j],
+            data: lastSortId
         }).save()
     }
+
+    // const arrRepository = getConnection().getRepository(Arr);
+    // const arr = await arrRepository.find({ relations: ["data"] });
+    //
+    // console.table(arr)
 
     return result
 
