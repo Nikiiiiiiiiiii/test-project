@@ -1,12 +1,15 @@
-import {Entity, Column, BaseEntity, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, Column, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn} from "typeorm";
 
 @Entity('array')
 export class arrDB extends BaseEntity{
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
-    @Column("text", { nullable: false})
-    data: string;
+    @PrimaryColumn()
+    sortid: number
+
+    @Column("int", { nullable: false})
+    el: number
 
 }

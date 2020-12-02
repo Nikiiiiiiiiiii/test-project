@@ -1,4 +1,5 @@
 export interface IarrDB {
     readonly id: number
-    readonly data: string
+    readonly sortId: number
+    readonly el: number
 }

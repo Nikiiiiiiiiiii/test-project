@@ -6,7 +6,8 @@ export const root = (req: any, res: any) => {
 
 export const calc = async (req: any, res: any) => {
     const array = await create(req.body.title.trim().split(' ').map(parseFloat))
+
     res.render('index', {
-        array: array.data
+        array: array.join(' ')
     })
 }

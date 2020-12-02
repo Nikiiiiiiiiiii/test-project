@@ -1,7 +1,7 @@
 import {arrDB} from "../../entity/arr";
-import {IarrDB} from "../../interfaces/arrDB.interface";
+import { getManager} from "typeorm";
 
-const bubbleSort = (arr: Array<number>): string => {
+const bubbleSort = (arr: Array<number>): Array<number> => {
 
     for (let i = 0, endI = arr.length - 1; i < endI; i++) {
 
@@ -18,13 +18,25 @@ const bubbleSort = (arr: Array<number>): string => {
 
         if (!wasSwap) break;
     }
-    return arr.join(' ')
+    return arr
 };
 
-export const create = async (array: Array<number>): Promise<IarrDB> => {
+export const create = async (array: Array<number>): Promise<Array<number>> => {
 
-    return await arrDB.create({
-        data: bubbleSort(array)
-    }).save()
+    let lastSortId = await getManager()
+        .query(`SELECT MAX(sortid) FROM public.array`) // Получаем id последней сортировки в бд
+
+    lastSortId[0].max === null ? lastSortId = 1 : lastSortId = lastSortId[0].max + 1 // Если сортировок ещё не было, указываем, что это первая, иначе приводим полученное значение к удобному виду
+
+    const result = bubbleSort(array)
+
+    for (let j = 0; j < result.length; j++) {
+        await arrDB.create({
+            sortid: lastSortId,
+            el: result[j]
+        }).save()
+    }
+
+    return result
 
 }
